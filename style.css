@@ -1,0 +1,104 @@
+/* ===== Global Body ===== */
+body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #7f00ff, #e100ff, #00c6ff);
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
+    color: #fff;
+}
+
+/* ===== Animated Gradient Background ===== */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ===== Heading Typing Effect ===== */
+h1 {
+    font-size: 3.2rem;
+    margin-bottom: 3rem;
+    color: #fff;
+    border-right: 3px solid #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    animation: typing 4s steps(25) forwards, blink 0.8s step-end infinite alternate;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 26.7rem; }
+}
+
+@keyframes blink {
+    50% { border-color: transparent; }
+}
+
+/* ===== Input Box ===== */
+input {
+    height: 3rem;
+    width: 30rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 0.7rem 2rem;
+    font-size: 1.2rem;
+    color: #fff;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+input:focus {
+    border-color: #ffcc70;
+    box-shadow: 0 0 15px #ffcc70;
+}
+
+/* ===== Button Styling ===== */
+button {
+    margin-top: 1.5rem;
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #ff8c00, #ff2e63);
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    background: linear-gradient(90deg, #ff2e63, #ff8c00);
+}
+
+/* ===== Response Box ===== */
+#result {
+    margin-top: 2rem;
+    width: 30rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(12px);
+    font-size: 1.1rem;
+    text-align: left;
+    color: #fff;
+    line-height: 1.6;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}

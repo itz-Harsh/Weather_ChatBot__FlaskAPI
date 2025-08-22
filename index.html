@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Weather ChatBot</title>
+  </head>
+
+  <body>
+    <h1>Weather ChatBot</h1>
+
+    <div>
+      <input type="text" id="cityInput" placeholder="City name" onchange="fetchdata()" />
+    </div>
+
+    <div id="result">
+        
+        <h3 class="item" id="city"></h3>
+
+        <h3 class="item" id="temp"></h3>
+
+        <h3 class="item" id="humidity"></h3>
+
+        <h3 class="item" id="wind" ></h3>
+
+    </div>
+  <script src="script.js"></script>
+  </body>
+</html>
