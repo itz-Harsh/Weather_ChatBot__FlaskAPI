@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify
 import requests
 from collections import defaultdict
-import dotenv
+import os
 import flask_cors
 
 app = Flask(__name__)
 flask_cors.CORS(app)
 
-API_KEY = dotenv.dotenv_values(".env")["apikey"]
+API_KEY = os.environ.get("apikey")
 
 CURRENT_URL  = "https://api.openweathermap.org/data/2.5/weather"
 FORECAST_URL = "https://api.openweathermap.org/data/2.5/forecast"
