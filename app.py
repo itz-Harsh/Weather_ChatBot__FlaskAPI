@@ -13,9 +13,102 @@ CURRENT_URL  = "https://api.openweathermap.org/data/2.5/weather"
 FORECAST_URL = "https://api.openweathermap.org/data/2.5/forecast"
 
 
+# ISO 3166-1 alpha-2 → Country name (major + commonly used)
+COUNTRY_MAP = {
+    "IN": "India",
+    "US": "United States",
+    "GB": "United Kingdom",
+    "CA": "Canada",
+    "AU": "Australia",
+    "NZ": "New Zealand",
+    "DE": "Germany",
+    "FR": "France",
+    "IT": "Italy",
+    "ES": "Spain",
+    "PT": "Portugal",
+    "NL": "Netherlands",
+    "BE": "Belgium",
+    "CH": "Switzerland",
+    "AT": "Austria",
+    "SE": "Sweden",
+    "NO": "Norway",
+    "FI": "Finland",
+    "DK": "Denmark",
+    "IE": "Ireland",
+    "PL": "Poland",
+    "CZ": "Czech Republic",
+    "HU": "Hungary",
+    "RO": "Romania",
+    "UA": "Ukraine",
+    "RU": "Russia",
+    "TR": "Turkey",
+    "GR": "Greece",
+
+    "CN": "China",
+    "JP": "Japan",
+    "KR": "South Korea",
+    "KP": "North Korea",
+    "TW": "Taiwan",
+    "HK": "Hong Kong",
+    "SG": "Singapore",
+    "MY": "Malaysia",
+    "TH": "Thailand",
+    "VN": "Vietnam",
+    "ID": "Indonesia",
+    "PH": "Philippines",
+    "BD": "Bangladesh",
+    "PK": "Pakistan",
+    "LK": "Sri Lanka",
+    "NP": "Nepal",
+    "MM": "Myanmar",
+
+    "BR": "Brazil",
+    "AR": "Argentina",
+    "CL": "Chile",
+    "CO": "Colombia",
+    "PE": "Peru",
+    "VE": "Venezuela",
+    "MX": "Mexico",
+
+    "ZA": "South Africa",
+    "NG": "Nigeria",
+    "KE": "Kenya",
+    "EG": "Egypt",
+    "MA": "Morocco",
+    "DZ": "Algeria",
+    "GH": "Ghana",
+    "ET": "Ethiopia",
+
+    "AE": "United Arab Emirates",
+    "SA": "Saudi Arabia",
+    "QA": "Qatar",
+    "KW": "Kuwait",
+    "OM": "Oman",
+    "BH": "Bahrain",
+    "IL": "Israel",
+    "IR": "Iran",
+    "IQ": "Iraq",
+    "JO": "Jordan",
+
+    "IS": "Iceland",
+    "RS": "Serbia",
+    "SK": "Slovakia",
+    "BG": "Bulgaria",
+    "HR": "Croatia",
+    "SI": "Slovenia",
+    "LT": "Lithuania",
+    "LV": "Latvia",
+    "EE": "Estonia",
+
+    "CU": "Cuba",
+    "DO": "Dominican Republic",
+    "JM": "Jamaica"
+}
+
+
 @app.route("/weather", methods=["GET", "POST"])
 def weather():
-    # 1️⃣ Get city
+    # Get city
     if request.method == "POST":
         payload = request.get_json(silent=True)
         city = payload.get("city") if payload else None
@@ -25,13 +118,16 @@ def weather():
     if not city:
         return jsonify({"error": "City is required"}), 400
 
+    if not API_KEY:
+        return jsonify({"error": "API key not configured"}), 500
+
     params = {
         "q": city,
         "appid": API_KEY,
         "units": "metric"
     }
 
-    # 2️⃣ Call CURRENT weather
+    # Current weather
     try:
         current_res = requests.get(CURRENT_URL, params=params, timeout=8)
         current_res.raise_for_status()
@@ -42,7 +138,7 @@ def weather():
 
     current_raw = current_res.json()
 
-    # 3️⃣ Call FORECAST
+    # Forecast
     try:
         forecast_res = requests.get(FORECAST_URL, params=params, timeout=8)
         forecast_res.raise_for_status()
@@ -53,7 +149,7 @@ def weather():
 
     forecast_raw = forecast_res.json()
 
-    # 4️⃣ Parse CURRENT
+    # Parse current
     current = {
         "temperature": current_raw["main"]["temp"],
         "feels_like": current_raw["main"]["feels_like"],
@@ -63,7 +159,7 @@ def weather():
         "wind_speed": current_raw["wind"]["speed"]
     }
 
-    # 5️⃣ Parse FORECAST (5-day daily summary)
+    # Parse forecast (daily summary)
     daily = defaultdict(list)
 
     for item in forecast_raw["list"]:
@@ -74,7 +170,6 @@ def weather():
 
     for date, entries in list(daily.items())[:10]:
         temps = [e["main"]["temp"] for e in entries]
-
         forecast.append({
             "date": date,
             "min_temp": round(min(temps), 1),
@@ -84,10 +179,13 @@ def weather():
             "wind_speed": entries[0]["wind"]["speed"]
         })
 
-    # 6️⃣ Final PERFECT response
+    country_code = current_raw["sys"]["country"]
+    country_name = COUNTRY_MAP.get(country_code, country_code)
+
     return jsonify({
         "city": current_raw["name"],
-        "country": current_raw["sys"]["country"],
+        "country": country_name,
+        "country_code": country_code,
         "coordinates": {
             "lat": current_raw["coord"]["lat"],
             "lon": current_raw["coord"]["lon"]
