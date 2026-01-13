@@ -67,7 +67,7 @@ def weather():
         "description": current_raw["weather"][0]["description"],
         "wind_speed": current_raw["wind"]["speed"]
     }
-
+    
     # 5️⃣ Parse FORECAST (5-day daily summary)
     daily = defaultdict(list)
 
@@ -87,6 +87,7 @@ def weather():
             "min_temp": round(min(temps), 1),
             "max_temp": round(max(temps), 1),
             "description": entries[0]["weather"][0]["description"],
+            "icon": entries[0]["weather"][0]["icon"],
             "humidity": entries[0]["main"]["humidity"],
             "wind_speed": entries[0]["wind"]["speed"]
         })
